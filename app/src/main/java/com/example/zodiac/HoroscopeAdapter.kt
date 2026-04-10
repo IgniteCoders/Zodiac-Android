@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class HoroscopeAdapter(val items: List<Horoscope>) : RecyclerView.Adapter<HoroscopeViewHolder>() {
+class HoroscopeAdapter(val items: List<Horoscope>, val onItemClick: (Int) -> Unit) : RecyclerView.Adapter<HoroscopeViewHolder>() {
 
     // Cual es la vista para los elementos
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoroscopeViewHolder {
@@ -19,6 +19,9 @@ class HoroscopeAdapter(val items: List<Horoscope>) : RecyclerView.Adapter<Horosc
     override fun onBindViewHolder(holder: HoroscopeViewHolder, position: Int) {
         val horoscope = items[position]
         holder.render(horoscope)
+        holder.itemView.setOnClickListener {
+            onItemClick(position)
+        }
     }
 
     // Cuantos elementos tengo que mostrar

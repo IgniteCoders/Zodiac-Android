@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zodiac">
         <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
