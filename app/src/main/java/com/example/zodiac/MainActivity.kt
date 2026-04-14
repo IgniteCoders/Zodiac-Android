@@ -3,8 +3,10 @@ package com.example.zodiac
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,5 +38,25 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_main, menu)
+
+        val searchView = menu.findItem(R.id.menu_search).actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.i("ZODIAC", "Buscando: $query")
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.i("ZODIAC", "Escribiendo: $newText")
+                return true
+            }
+        })
+
+        return true
     }
 }
