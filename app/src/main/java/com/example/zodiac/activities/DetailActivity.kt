@@ -1,4 +1,4 @@
-package com.example.zodiac
+package com.example.zodiac.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.zodiac.data.Horoscope
+import com.example.zodiac.R
 
 
 class DetailActivity : AppCompatActivity() {
@@ -35,7 +37,7 @@ class DetailActivity : AppCompatActivity() {
 
         val id = intent.getStringExtra("HOROSCOPE_ID")!!
 
-        val horoscope = Horoscope.getById(id)!!
+        val horoscope = Horoscope.Companion.getById(id)!!
 
         nameTextView.setText(horoscope.name)
         datesTextView.setText(horoscope.dates)

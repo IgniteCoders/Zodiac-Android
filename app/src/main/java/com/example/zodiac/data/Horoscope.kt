@@ -1,4 +1,6 @@
-package com.example.zodiac
+package com.example.zodiac.data
+
+import com.example.zodiac.R
 
 class Horoscope(
     val id: String,

@@ -1,4 +1,4 @@
-package com.example.zodiac
+package com.example.zodiac.utils
 
 import java.text.Normalizer
 
