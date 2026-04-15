@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     var horoscopeList: List<Horoscope> = Horoscope.horoscopeList
 
     lateinit var recyclerView: RecyclerView
+    lateinit var adapter: HoroscopeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
 
-        val adapter = HoroscopeAdapter(horoscopeList) { position ->
+        adapter = HoroscopeAdapter(horoscopeList) { position ->
             val horoscope = horoscopeList[position]
             val intent = Intent(this, DetailActivity::class.java)
             intent.putExtra("HOROSCOPE_ID", horoscope.id)
@@ -51,8 +52,12 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                Log.i("ZODIAC", "Escribiendo: $newText")
+            override fun onQueryTextChange(newText: String): Boolean {
+                horoscopeList = Horoscope.horoscopeList.filter {
+                    getString(it.name).search(newText)
+                    || getString(it.dates).search(newText)
+                }
+                adapter.updateData(horoscopeList)
                 return true
             }
         })
