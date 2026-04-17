@@ -11,9 +11,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.zodiac.data.Horoscope
 import com.example.zodiac.R
+import com.example.zodiac.data.Horoscope
 import com.example.zodiac.utils.SessionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 
 class DetailActivity : AppCompatActivity() {
@@ -22,6 +31,7 @@ class DetailActivity : AppCompatActivity() {
     lateinit var signImageView: ImageView
     lateinit var nameTextView: TextView
     lateinit var datesTextView: TextView
+    lateinit var horoscopeLuckTextView: TextView
 
     lateinit var session: SessionManager
     lateinit var favoriteMenuItem: MenuItem
@@ -43,6 +53,7 @@ class DetailActivity : AppCompatActivity() {
         signImageView = findViewById(R.id.signImageView)
         nameTextView = findViewById(R.id.nameTextView)
         datesTextView = findViewById(R.id.datesTextView)
+        horoscopeLuckTextView = findViewById(R.id.horoscopeLuckTextView)
 
         val id = intent.getStringExtra("HOROSCOPE_ID")!!
 
@@ -57,6 +68,8 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setTitle(horoscope.name)
         supportActionBar?.setSubtitle(horoscope.dates)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        getHoroscopeLuck()
     }
 
     // Que menu se quiere cargar en el ActionBar
@@ -112,5 +125,47 @@ class DetailActivity : AppCompatActivity() {
 
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
+    }
+
+    fun getHoroscopeLuck() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val urlGetRequest = URL("https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${horoscope.id}")
+
+            // HTTP Connexion
+            val apiConnexion = urlGetRequest.openConnection() as HttpsURLConnection
+
+            // Method
+            apiConnexion.setRequestMethod("GET")
+
+            try {
+                // Response code
+                val responseCode = apiConnexion.getResponseCode()
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Read the response
+                    val `in` = BufferedReader(InputStreamReader(apiConnexion.getInputStream()))
+                    val response = StringBuffer()
+                    var inputLine: String? = null
+
+                    while ((`in`.readLine().also { inputLine = it }) != null) {
+                        response.append(inputLine)
+                    }
+                    `in`.close()
+
+                    // Return response
+                    val result = JSONObject(response.toString()).getJSONObject("data").getString("horoscope")
+                    horoscopeLuckTextView.text = result
+                } else {
+                    // Hubo algun error inesperado
+                    horoscopeLuckTextView.text = "Hubo algun error inesperado"
+                }
+            } catch (e: Exception) {
+                // Hubo algun error inesperado
+                horoscopeLuckTextView.text = "Hubo algun error inesperado"
+            } finally {
+                Log.e("Disconnection", "e.toString()")
+                apiConnexion.disconnect()
+            }
+        }
     }
 }

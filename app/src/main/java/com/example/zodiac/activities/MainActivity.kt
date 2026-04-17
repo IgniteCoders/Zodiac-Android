@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                horoscopeList = Horoscope.Companion.horoscopeList.filter {
+                horoscopeList = Horoscope.horoscopeList.filter {
                     getString(it.name).search(newText)
                     || getString(it.dates).search(newText)
                 }
